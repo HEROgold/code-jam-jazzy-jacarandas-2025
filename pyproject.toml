@@ -1,10 +1,10 @@
 [project]
 # This section contains metadata about your project.
 # Don't forget to change the name, description, and authors to match your project!
-name = "code-jam-template"
-description = "Add your description here"
+name = "code-jam-jazzy-jacarandas-2025"
+description = "Code jam team Jazzy Jacarandas, 2025."
 authors = [
-    { name = "Your Name" }
+    { name = "HEROgold" }
 ]
 version = "0.1.0"
 readme = "README.md"
