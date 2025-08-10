@@ -1,7 +1,7 @@
 import reflex as rx
 
 class PhoneNumberSlider(rx.State):
-    area: int = 49
+    area: int = 1
     phone_rest: list[int] = [0, 0, 0, 0]
 
 
