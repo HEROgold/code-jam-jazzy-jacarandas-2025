@@ -1,6 +1,6 @@
 """Welcome to Reflex! This file outlines the steps to create a basic app."""
 
-import openmeteo_requests  # Line 9-51 copied from https://open-meteo.com
+import openmeteo_requests
 import pandas as pd
 import plotly.graph_objects as go
 import reflex as rx
@@ -15,8 +15,12 @@ class FetcherState(rx.State):
     fig_pie_all: go.Figure = go.Figure()
     loaded: bool = False
 
-    def fetch_weather_data(self) -> None:
+    def fetch_weather_data(
+        self,
+    ) -> None:  # Majority of data fetching logic is copied from https://open-meteo.com/en/docs
         """Fetch data about temperatures from the Open-meteo free API."""
+        self.loaded = False
+
         # Setup the Open-Meteo API client with cache and retry on error
         cache_session = requests_cache.CachedSession(".cache", expire_after=3600)
         retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
@@ -68,6 +72,9 @@ class FetcherState(rx.State):
         )
         df_ohlc = df_ohlc.reset_index()
 
+        # Truncate all numeric columns to 2 decimal places
+        df_ohlc = df_ohlc.round(2)
+
         fig = go.Figure(
             data=[
                 go.Candlestick(
@@ -87,28 +94,44 @@ class FetcherState(rx.State):
             },
             xaxis_rangeslider_visible=False,
             yaxis_title="Temperature (°C)",
+            font={
+                "family": "Comic Sans MS, Comic Sans, cursive",
+                "size": 14,
+            },
         )
 
-        labels = df_ohlc["date"].dt.strftime("%Y-%m-%d")
+        labels = df_ohlc["date"].dt.strftime("%b %d")
         values = df_ohlc["High"]
 
         fig_pie_all = go.Figure(
-            data=[go.Pie(labels=labels, values=values)],
+            data=[
+                go.Pie(
+                    labels=labels,
+                    values=values,
+                    hovertemplate="%{label}<br>%{value:.2f}°C<extra></extra>",  # Tags needed to remove text box
+                )
+            ],
         )
 
         fig_pie_all.update_layout(
             title={
                 "text": "Daily Highest Temperatures in London",
                 "x": 0.5,
+                "xanchor": "center",
+                "font": {
+                    "family": "Comic Sans MS, Comic Sans, cursive",
+                    "size": 24,
+                },
+            },
+            font={
+                "family": "Comic Sans MS, Comic Sans, cursive",
+                "size": 12,
             },
         )
 
         self.fig = fig
         self.fig_pie_all = fig_pie_all
         self.loaded = True
-
-
-EMPTY_FIG = go.Figure()
 
 
 @rx.page(on_load=FetcherState.fetch_weather_data)
