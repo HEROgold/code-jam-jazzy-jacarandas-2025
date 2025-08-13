@@ -1,9 +1,41 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, TypedDict
+
 import openmeteo_requests
 import pandas as pd
 import plotly.graph_objects as go
 import reflex as rx
 import requests_cache
 from retry_requests import retry
+
+from code_jam_jazzy_jacarandas_2025.config import Config
+from code_jam_jazzy_jacarandas_2025.logger import app_log
+
+if TYPE_CHECKING:
+    from logging import Logger
+
+    from numpy import ndarray
+    from openmeteo_sdk.VariablesWithTime import VariablesWithTime
+    from openmeteo_sdk.VariableWithValues import VariableWithValues
+    from openmeteo_sdk.WeatherApiResponse import WeatherApiResponse
+
+
+class HourlyData(TypedDict):
+    """TypedDict for hourly weather data dictionary."""
+
+    date: pd.DatetimeIndex
+    temperature_2m: ndarray
+
+
+class FetcherSettings:
+    """Configuration for fetching weather data."""
+
+    latitude = Config(51.5085)
+    longitude = Config(-0.1257)
+    hourly = Config("temperature_2m")
+    timezone = Config("auto")
+    forecast_days = Config(16)
 
 
 class FetcherState(rx.State):
@@ -13,46 +45,71 @@ class FetcherState(rx.State):
     fig_pie_all: go.Figure = go.Figure()
     loaded: bool = False
 
+    # This avoids the unserializable state issue.
+    @property
+    def log(self) -> Logger:
+        """Get logger for FetcherState."""
+        return app_log.getChild("FetcherState")
+
+    def _get_session(self) -> openmeteo_requests.Client:
+        cache_session = requests_cache.CachedSession(".cache", expire_after=3600)
+        retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
+        # retry() returns our cache_session
+        return openmeteo_requests.Client(session=retry_session)  # type: ignore[reportArgumentType]
+
+    def get_hourly_data(self, response: WeatherApiResponse) -> None | tuple[VariablesWithTime, VariableWithValues]:
+        """Process hourly data. The order of variables needs to be the same as requested."""
+        hourly = response.Hourly()
+        if hourly is None:
+            self.log.warning("No hourly data found")
+            return None
+
+        hourly_var = hourly.Variables(0)
+        if hourly_var is None:
+            self.log.warning("No hourly variables found")
+            return None
+
+        return hourly, hourly_var
+
     def fetch_weather_data(
         self,
     ) -> None:  # Majority of data fetching logic is copied from https://open-meteo.com/en/docs
         """Fetch data about temperatures from the Open-meteo free API."""
         self.loaded = False
 
-        # Setup the Open-Meteo API client with cache and retry on error
-        cache_session = requests_cache.CachedSession(".cache", expire_after=3600)
-        retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
-        openmeteo = openmeteo_requests.Client(session=retry_session)
+        openmeteo = self._get_session()
 
         # Make sure all required weather variables are listed here
         # The order of variables in hourly or daily is important to assign them correctly below
         url = "https://api.open-meteo.com/v1/forecast"
-        params = {
-            "latitude": 51.5085,
-            "longitude": -0.1257,
-            "hourly": "temperature_2m",
-            "timezone": "auto",
-            "forecast_days": 16,
+        params: dict[str, str | float | int] = {
+            "latitude": FetcherSettings.latitude,
+            "longitude": FetcherSettings.longitude,
+            "hourly": FetcherSettings.hourly,
+            "timezone": FetcherSettings.timezone,
+            "forecast_days": FetcherSettings.forecast_days,
         }
         responses = openmeteo.weather_api(url, params=params)
 
         # Process first location. Add a for-loop for multiple locations or weather models
         response = responses[0]
 
-        # Process hourly data. The order of variables needs to be the same as requested.
-        hourly = response.Hourly()
-        hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
+        if data := self.get_hourly_data(response):
+            hourly, hourly_temperature_2m = data
+        else:
+            return  # return > warnings are logged in get_hourly_data
 
-        hourly_data = {
-            "date": pd.date_range(
-                start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
-                end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
-                freq=pd.Timedelta(seconds=hourly.Interval()),
-                inclusive="left",
-            ),
+        date_range = pd.date_range(
+            start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
+            end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
+            freq=pd.Timedelta(seconds=hourly.Interval()),
+            inclusive="left",
+        )
+
+        hourly_data: HourlyData = {
+            "date": date_range,
+            "temperature_2m": hourly_temperature_2m.ValuesAsNumpy(),
         }
-
-        hourly_data["temperature_2m"] = hourly_temperature_2m
 
         hourly_dataframe = pd.DataFrame(data=hourly_data)
 
