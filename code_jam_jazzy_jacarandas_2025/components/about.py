@@ -1,5 +1,6 @@
 import reflex as rx
 
+
 def redirect_to_about() -> rx.event.EventSpec:
     """Redirect to the about page."""
     return rx.redirect("/about")
