@@ -3,25 +3,27 @@
 # Don't forget to change the name, description, and authors to match your project!
 name = "code-jam-jazzy-jacarandas-2025"
 description = "Code jam team Jazzy Jacarandas, 2025."
-authors = [
-    { name = "HEROgold" }
-]
+authors = [{ name = "HEROgold" }]
 version = "0.1.0"
 readme = "README.md"
 requires-python = ">=3.12, <4.0"
 dependencies = [
     "confkit>=0.1.3",
     "reflex>=0.8.5",
-"reflex (>=0.8.5,<0.9.0)", "pandas (>=2.3.1,<3.0.0)", "plotly (>=6.2.0,<7.0.0)", "openmeteo-requests (>=1.6.0,<2.0.0)", "requests-cache (>=1.2.1,<2.0.0)", "retry-requests (>=2.0.0,<3.0.0)", "pre-commit (>=4.3.0,<5.0.0)"]
+    "reflex (>=0.8.5,<0.9.0)",
+    "pandas (>=2.3.1,<3.0.0)",
+    "plotly (>=6.2.0,<7.0.0)",
+    "openmeteo-requests (>=1.6.0,<2.0.0)",
+    "requests-cache (>=1.2.1,<2.0.0)",
+    "retry-requests (>=2.0.0,<3.0.0)",
+    "pre-commit (>=4.3.0,<5.0.0)",
+]
 
 [dependency-groups]
 # This `dev` group contains all the development requirements for our linting toolchain.
 # Don't forget to pin your dependencies!
 # This list will have to be migrated if you wish to use another dependency manager.
-dev = [
-    "pre-commit~=4.2.0",
-    "ruff~=0.12.2",
-]
+dev = ["pre-commit~=4.3.0", "ruff~=0.12.2"]
 
 [tool.ruff]
 # Increase the line length. This breaks PEP8 but it is way easier to work with.
