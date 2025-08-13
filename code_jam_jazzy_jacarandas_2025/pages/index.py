@@ -1,10 +1,10 @@
+import reflex as rx
+
+from code_jam_jazzy_jacarandas_2025.components.header import header
 from code_jam_jazzy_jacarandas_2025.states import FetcherState
 
 
-import reflex as rx
-
-
-@rx.page(on_load=FetcherState.fetch_weather_data)
+@rx.page("/", on_load=FetcherState.fetch_weather_data)
 def index() -> rx.Component:
     """Render the main page component.
 
@@ -12,6 +12,7 @@ def index() -> rx.Component:
     Shows a loading spinner and message while data is being fetched.
     """
     content = rx.vstack(
+        header(),
         rx.cond(
             FetcherState.loaded,
             rx.vstack(
