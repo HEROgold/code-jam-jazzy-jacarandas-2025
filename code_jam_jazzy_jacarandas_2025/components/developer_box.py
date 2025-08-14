@@ -8,13 +8,21 @@ def developer_box(name: str, description: str, github_link: str, *, team_leader:
     """
     border_color = "gold" if team_leader else "white"
 
+    username = github_link.rstrip("/").split("/")[-1]
+    avatar_url = f"https://github.com/{username}.png"
+
     return rx.box(
-        rx.vstack(
-            rx.text(name, size="8"),
-            rx.text(description, size="5"),
-            rx.link("Github!", href=github_link, target="_blank", size="4"),
-            spacing="1",
-            width="40vw",
+        rx.hstack(
+            rx.vstack(
+                rx.text(name, size="6"),
+                rx.text(description, size="4"),
+                rx.link("Github link", href=github_link, size="3"),
+                spacing="1",
+                width="40vw",
+            ),
+            rx.image(src=avatar_url, alt=f"{name}'s profile picture", width="80px", border_radius="50%"),
+            spacing="2",
+            align_items="center",
         ),
         border=f"2px solid {border_color}",
         border_radius="25px",
