@@ -1,5 +1,7 @@
 import reflex as rx
-from code_jam_jazzy_jacarandas_2025.components.layout import BaseLayout
+
+from code_jam_jazzy_jacarandas_2025.components.layout import base_layout
+
 
 @rx.page("/about")
 def about() -> rx.Component:
@@ -13,4 +15,4 @@ def about() -> rx.Component:
         height="100vh",
         width="100vw",
     )
-    return BaseLayout(content)
+    return base_layout(content)

@@ -1,21 +1,23 @@
 import reflex as rx
 
+
 def navbar_button_format(name: str, redirect: rx.event.EventSpec) -> rx.Component:
+    """Style navigation button."""
     return rx.button(
-                name,
-                on_click=redirect,
-                padding="0.6rem 1.2rem",
-                border_radius="xl",
-                background="linear-gradient(to right, #4b4b4b, #2c2c2c)",  # dark gray gradient
-                color="white",
-                font_weight="semibold",
-                box_shadow="sm",
-                _hover={
-                    "background": "linear-gradient(to right, #606060, #3a3a3a)",
-                    "transform": "scale(1.05)",
-                    "transition": "0.2s",
-                },
-            )
+        name,
+        on_click=redirect,
+        padding="0.6rem 1.2rem",
+        border_radius="xl",
+        background="linear-gradient(to right, #4b4b4b, #2c2c2c)",  # dark gray gradient
+        color="white",
+        font_weight="semibold",
+        box_shadow="sm",
+        _hover={
+            "background": "linear-gradient(to right, #606060, #3a3a3a)",
+            "transform": "scale(1.05)",
+            "transition": "0.2s",
+        },
+    )
 
 
 def redirect_to_about() -> rx.event.EventSpec:
@@ -38,8 +40,8 @@ def home_button() -> rx.Component:
     return navbar_button_format("Home", redirect_to_index)
 
 
-
 def navbar() -> rx.Component:
+    """Render navigation bar with all buttons."""
     # to add a new button just put it in the hstack
     return rx.box(
         rx.hstack(
@@ -56,7 +58,5 @@ def navbar() -> rx.Component:
         position="sticky",
         top="0",
         z_index="1000",
-        style={
-            "fontFamily": "Comic Sans MS, Comic Sans, cursive"
-            },
+        style={"fontFamily": "Comic Sans MS, Comic Sans, cursive"},
     )
