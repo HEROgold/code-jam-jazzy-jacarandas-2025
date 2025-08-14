@@ -1,5 +1,23 @@
 import reflex as rx
 
+def navbar_button_format(name: str, redirect: rx.event.EventSpec) -> rx.Component:
+    return rx.button(
+                name,
+                on_click=redirect,
+                padding="0.6rem 1.2rem",
+                border_radius="xl",
+                background="linear-gradient(to right, #4b4b4b, #2c2c2c)",  # dark gray gradient
+                color="white",
+                font_weight="semibold",
+                box_shadow="sm",
+                _hover={
+                    "background": "linear-gradient(to right, #606060, #3a3a3a)",
+                    "transform": "scale(1.05)",
+                    "transition": "0.2s",
+                },
+            )
+
+
 def redirect_to_about() -> rx.event.EventSpec:
     """Redirect to the about page."""
     return rx.redirect("/about")
@@ -7,7 +25,7 @@ def redirect_to_about() -> rx.event.EventSpec:
 
 def about_button() -> rx.Component:
     """Render the about button."""
-    return rx.button("About", on_click=redirect_to_about)
+    return navbar_button_format("About", redirect_to_about)
 
 
 def redirect_to_index() -> rx.event.EventSpec:
@@ -17,23 +35,28 @@ def redirect_to_index() -> rx.event.EventSpec:
 
 def home_button() -> rx.Component:
     """Render the home button."""
-    return rx.button("Home", on_click=redirect_to_index)
+    return navbar_button_format("Home", redirect_to_index)
 
 
-# eventually if we have more pages should create a BaseLayout() function to wrap pages in a navbar
+
 def navbar() -> rx.Component:
+    # to add a new button just put it in the hstack
     return rx.box(
         rx.hstack(
             home_button(),
             about_button(),
             spacing="4",
             align_items="center",
+            justify_content="center",
         ),
         width="100%",
         padding="0.75rem 1rem",
-        background_color="gray.50",
-        box_shadow="sm",
+        background="linear-gradient(to bottom, #222222, #121212)",
+        box_shadow="md",
+        position="sticky",
+        top="0",
+        z_index="1000",
         style={
-            "fontFamily": "Comic Sans MS, Comic Sans, cursive",
-        },
+            "fontFamily": "Comic Sans MS, Comic Sans, cursive"
+            },
     )
