@@ -4,6 +4,8 @@ from code_jam_jazzy_jacarandas_2025.components.developer_box import developer_bo
 from code_jam_jazzy_jacarandas_2025.components.layout import base_layout
 from code_jam_jazzy_jacarandas_2025.humans.developer_list import developers
 
+# Named "humans" because the other various files named "config" cause funny errors if folder is called "config"
+
 
 @rx.page("/about")
 def about() -> rx.Component:
