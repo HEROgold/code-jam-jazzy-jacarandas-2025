@@ -1,3 +1,4 @@
+.cache.sqlite
 *.db
 assets/external/
 .web
