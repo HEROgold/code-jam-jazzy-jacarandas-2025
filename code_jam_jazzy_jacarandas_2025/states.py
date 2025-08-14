@@ -36,6 +36,7 @@ class FetcherSettings:
     hourly = Config("temperature_2m")
     timezone = Config("auto")
     forecast_days = Config(16)
+    api_url = Config("https://api.open-meteo.com/v1/forecast")
 
 
 class FetcherState(rx.State):
@@ -71,33 +72,29 @@ class FetcherState(rx.State):
 
         return hourly, hourly_var
 
-    def fetch_weather_data(
-        self,
-    ) -> None:  # Majority of data fetching logic is copied from https://open-meteo.com/en/docs
-        """Fetch data about temperatures from the Open-meteo free API."""
-        self.loaded = False
-
-        openmeteo = self._get_session()
-
-        # Make sure all required weather variables are listed here
-        # The order of variables in hourly or daily is important to assign them correctly below
-        url = "https://api.open-meteo.com/v1/forecast"
-        params: dict[str, str | float | int] = {
+    def _get_api_params(self) -> dict[str, str | float | int]:
+        """Get API parameters for weather data request."""
+        return {
             "latitude": FetcherSettings.latitude,
             "longitude": FetcherSettings.longitude,
             "hourly": FetcherSettings.hourly,
             "timezone": FetcherSettings.timezone,
             "forecast_days": FetcherSettings.forecast_days,
         }
-        responses = openmeteo.weather_api(url, params=params)
 
-        # Process first location. Add a for-loop for multiple locations or weather models
-        response = responses[0]
+    def _fetch_api_data(self) -> WeatherApiResponse | None:
+        """Fetch raw weather data from Open-meteo API."""
+        openmeteo = self._get_session()
+        params = self._get_api_params()
 
+        return openmeteo.weather_api(FetcherSettings.api_url, params=params)[0]
+
+    def _process_hourly_data(self, response: WeatherApiResponse) -> pd.DataFrame | None:
+        """Process hourly weather data into a DataFrame."""
         if data := self.get_hourly_data(response):
             hourly, hourly_temperature_2m = data
         else:
-            return  # return > warnings are logged in get_hourly_data
+            return None  # warnings are logged in get_hourly_data
 
         date_range = pd.date_range(
             start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
@@ -112,9 +109,12 @@ class FetcherState(rx.State):
         }
 
         hourly_dataframe = pd.DataFrame(data=hourly_data)
-
         hourly_dataframe["date"] = pd.to_datetime(hourly_dataframe["date"])
 
+        return hourly_dataframe
+
+    def _create_ohlc_dataframe(self, hourly_dataframe: pd.DataFrame) -> pd.DataFrame:
+        """Convert hourly data to OHLC (Open, High, Low, Close) format."""
         df_ohlc = (
             hourly_dataframe.set_index("date")["temperature_2m"]
             .resample("D")
@@ -122,14 +122,19 @@ class FetcherState(rx.State):
             .dropna()
         )
 
-        df_ohlc = (
-            df_ohlc.rename(columns={"first": "Open", "max": "High", "min": "Low", "last": "Close"})  # OHLC conversion
+        return (
+            df_ohlc.rename(columns={
+                "first": "Open",
+                "max": "High",
+                "min": "Low",
+                "last": "Close"
+            }) # type: ignore[reportCallIssue]
+            .reset_index()
+            .round(2)
         )
-        df_ohlc = df_ohlc.reset_index()
 
-        # Truncate all numeric columns to 2 decimal places
-        df_ohlc = df_ohlc.round(2)
-
+    def _create_candlestick_chart(self, df_ohlc: pd.DataFrame) -> go.Figure:
+        """Create candlestick chart from OHLC data."""
         fig = go.Figure(
             data=[
                 go.Candlestick(
@@ -155,6 +160,10 @@ class FetcherState(rx.State):
             },
         )
 
+        return fig
+
+    def _create_pie_chart(self, df_ohlc: pd.DataFrame) -> go.Figure:
+        """Create pie chart showing daily highest temperatures."""
         labels = df_ohlc["date"].dt.strftime("%b %d")
         values = df_ohlc["High"]
 
@@ -163,7 +172,7 @@ class FetcherState(rx.State):
                 go.Pie(
                     labels=labels,
                     values=values,
-                    hovertemplate="%{label}<br>%{value:.2f}°C<extra></extra>",  # Tags needed to remove text box
+                    hovertemplate="%{label}<br>%{value:.2f}°C<extra></extra>",
                 )
             ],
         )
@@ -184,6 +193,27 @@ class FetcherState(rx.State):
             },
         )
 
-        self.fig = fig
-        self.fig_pie_all = fig_pie_all
+        return fig_pie_all
+
+    def fetch_weather_data(self) -> None:
+        """Fetch data about temperatures from the Open-meteo free API."""
+        self.loaded = False
+
+        # Fetch raw data from API
+        response = self._fetch_api_data()
+        if not response:
+            return
+
+        # Process hourly data
+        hourly_dataframe = self._process_hourly_data(response)
+        if hourly_dataframe is None:
+            return
+
+        # Create OHLC dataframe
+        df_ohlc = self._create_ohlc_dataframe(hourly_dataframe)
+
+        # Create charts
+        self.fig = self._create_candlestick_chart(df_ohlc)
+        self.fig_pie_all = self._create_pie_chart(df_ohlc)
+
         self.loaded = True
