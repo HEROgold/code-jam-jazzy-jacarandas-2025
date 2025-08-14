@@ -1,20 +1,30 @@
 import reflex as rx
 
+def redirect_to_about() -> rx.event.EventSpec:
+    """Redirect to the about page."""
+    return rx.redirect("/about")
+
+
+def about_button() -> rx.Component:
+    """Render the about button."""
+    return rx.button("About", on_click=redirect_to_about)
+
+
+def redirect_to_home() -> rx.event.EventSpec:
+    """Redirect to the home page."""
+    return rx.redirect("/")
+
+
+def home_button() -> rx.Component:
+    """Render the home button."""
+    return rx.button("Home", on_click=redirect_to_home)
+
+
 def navbar() -> rx.Component:
     return rx.box(
         rx.hstack(
-            rx.button(
-                "Home",
-                on_click=lambda: rx.redirect("/"),
-                padding="2",
-                border_radius="md",
-            ),
-            rx.button(
-                "About",
-                on_click=lambda: rx.redirect("/about"),
-                padding="2",
-                border_radius="md",
-            ),
+            home_button(),
+            about_button(),
             spacing="4",
             align_items="center",
         ),
