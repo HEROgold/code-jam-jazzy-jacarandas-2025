@@ -10,16 +10,17 @@ def about_button() -> rx.Component:
     return rx.button("About", on_click=redirect_to_about)
 
 
-def redirect_to_home() -> rx.event.EventSpec:
+def redirect_to_index() -> rx.event.EventSpec:
     """Redirect to the home page."""
     return rx.redirect("/")
 
 
 def home_button() -> rx.Component:
     """Render the home button."""
-    return rx.button("Home", on_click=redirect_to_home)
+    return rx.button("Home", on_click=redirect_to_index)
 
 
+# eventually if we have more pages should create a BaseLayout() function to wrap pages in a navbar
 def navbar() -> rx.Component:
     return rx.box(
         rx.hstack(
