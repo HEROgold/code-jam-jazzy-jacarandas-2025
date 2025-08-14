@@ -13,9 +13,13 @@ def about() -> rx.Component:
     dev_boxes = [developer_box(**dev) for dev in developers]
     content = rx.center(
         rx.vstack(
-            rx.text("About this app:", size="5"),
-            rx.text("This app provides weather data visualizations.", size="3"),
-            rx.text("About the Jazzy Jacarandas:", size="5"),
+            rx.text("About this app:", size="5", font_family="Comic Sans MS, Comic Sans, cursive"),
+            rx.text(
+                "This app provides weather data visualizations.",
+                size="3",
+                font_family="Comic Sans MS, Comic Sans, cursive",
+            ),
+            rx.text("About the Jazzy Jacarandas:", size="5", font_family="Comic Sans MS, Comic Sans, cursive"),
             *dev_boxes,
             spacing="2",
         ),

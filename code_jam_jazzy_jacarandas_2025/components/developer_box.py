@@ -14,9 +14,9 @@ def developer_box(name: str, description: str, github_link: str, *, team_leader:
     return rx.box(
         rx.hstack(
             rx.vstack(
-                rx.text(name, size="6"),
-                rx.text(description, size="4"),
-                rx.link("Github link", href=github_link, size="3"),
+                rx.text(name, size="6", font_family="Comic Sans MS, Comic Sans, cursive"),
+                rx.text(description, size="4", font_family="Comic Sans MS, Comic Sans, cursive"),
+                rx.link("Github link", href=github_link, size="3", font_family="Comic Sans MS, Comic Sans, cursive"),
                 spacing="1",
                 width="40vw",
             ),
