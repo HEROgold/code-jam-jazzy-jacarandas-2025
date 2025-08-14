@@ -123,12 +123,7 @@ class FetcherState(rx.State):
         )
 
         return (
-            df_ohlc.rename(columns={
-                "first": "Open",
-                "max": "High",
-                "min": "Low",
-                "last": "Close"
-            }) # type: ignore[reportCallIssue]
+            df_ohlc.rename(columns={"first": "Open", "max": "High", "min": "Low", "last": "Close"})  # type: ignore[reportCallIssue]
             .reset_index()
             .round(2)
         )

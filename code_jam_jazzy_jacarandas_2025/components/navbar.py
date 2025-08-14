@@ -39,8 +39,9 @@ def home_button() -> rx.Component:
     """Render the home button."""
     return navbar_button_format("Home", redirect_to_index)
 
+
 def logo() -> rx.Component:
-    """Render logo"""
+    """Render logo."""
     return rx.image(src="/jazzy_jacarandas_logo.png", width="100px", height="auto")
 
 
@@ -51,7 +52,7 @@ def navbar() -> rx.Component:
         rx.box(
             # Logo pinned to the top-left
             logo(),
-            position="absolute", # Ensures that logo is in line with other navbar buttons
+            position="absolute",  # Ensures that logo is in line with other navbar buttons
         ),
         rx.hstack(
             home_button(),
