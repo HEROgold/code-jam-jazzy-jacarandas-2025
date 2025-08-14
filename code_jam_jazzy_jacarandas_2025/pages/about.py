@@ -8,8 +8,8 @@ def about() -> rx.Component:
     """Render the about page."""
     content = rx.center(
         rx.vstack(
-            rx.text("About This App", font_size="5"),
-            rx.text("This app provides weather data visualizations.", font_size="3"),
+            rx.text("About This App", size="5"),
+            rx.text("This app provides weather data visualizations.", size="3"),
             spacing="2",
         ),
         height="100vh",
