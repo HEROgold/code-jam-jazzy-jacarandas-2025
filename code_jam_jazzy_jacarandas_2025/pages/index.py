@@ -1,6 +1,6 @@
 import reflex as rx
 
-from code_jam_jazzy_jacarandas_2025.components.header import header
+from code_jam_jazzy_jacarandas_2025.components.layout import BaseLayout
 from code_jam_jazzy_jacarandas_2025.states import FetcherState
 
 
@@ -12,7 +12,6 @@ def index() -> rx.Component:
     Shows a loading spinner and message while data is being fetched.
     """
     content = rx.vstack(
-        header(),
         rx.cond(
             FetcherState.loaded,
             rx.vstack(
@@ -39,4 +38,5 @@ def index() -> rx.Component:
         spacing="3",
         align_items="center",
     )
-    return rx.center(content, height="100vh", width="100vw")
+    center = rx.center(content, height="100vh", width="100vw")
+    return BaseLayout(center)
