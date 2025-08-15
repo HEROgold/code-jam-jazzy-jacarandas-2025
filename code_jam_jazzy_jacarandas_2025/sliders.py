@@ -93,11 +93,7 @@ class CountrySlider(rx.State):
             rx.box(
                 rx.vstack(
                     rx.text("Country:", font_weight="bold", font_size="lg", color="white"),
-                    rx.text(
-                        CountrySlider.selected_country_display,
-                        font_size="md",
-                        color="gray.300"
-                    ),
+                    rx.text(CountrySlider.selected_country_display, font_size="md", color="gray.300"),
                     CountrySlider._make_slider(),
                     rx.button(
                         "Update charts",
@@ -111,9 +107,7 @@ class CountrySlider(rx.State):
                     ),
                     spacing="4",
                     align_items="stretch",
-                    style={
-                        "fontFamily": "Comic Sans MS, Comic Sans, cursive"
-                    },
+                    style={"fontFamily": "Comic Sans MS, Comic Sans, cursive"},
                 ),
                 background_color="#222222",
                 padding="1.5rem",
