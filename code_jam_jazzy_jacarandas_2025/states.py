@@ -340,6 +340,7 @@ class FetcherState(rx.State):
             return go.Figure()
 
         # Setup the seed for random, ensuring reproducibility
+        # Seed is made absolute as "np.random.default_rng" expects a positive value
         seed = int(abs(FetcherSettings.latitude + FetcherSettings.longitude))
         random.seed(seed)
         rng = np.random.default_rng(seed)
