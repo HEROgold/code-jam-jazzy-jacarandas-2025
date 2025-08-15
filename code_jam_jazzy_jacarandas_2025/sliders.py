@@ -89,24 +89,39 @@ class CountrySlider(rx.State):
     @staticmethod
     def new(**kw: Any) -> VStack:  # noqa: ANN401
         """Create a new CountrySlider component."""
-        return rx.vstack(
-            rx.text("Country:"),
-            rx.text(f"Selected: {CountrySlider.selected_country_display}"),
+        return rx.center(
             rx.box(
-                CountrySlider._make_slider(),
-                width = "90%",
-                padding="0.5rem",
+                rx.vstack(
+                    rx.text("Country:", font_weight="bold", font_size="lg", color="white"),
+                    rx.text(
+                        CountrySlider.selected_country_display,
+                        font_size="md",
+                        color="gray.300"
+                    ),
+                    CountrySlider._make_slider(),
+                    rx.button(
+                        "Update charts",
+                        on_click=FetcherState.fetch_weather_data,
+                        padding="0.5rem 1.5rem",
+                        border_radius="md",
+                        background_color="teal.500",
+                        color="white",
+                        font_weight="semibold",
+                        _hover={"background_color": "teal.600"},
+                    ),
+                    spacing="4",
+                    align_items="stretch",
+                    style={
+                        "fontFamily": "Comic Sans MS, Comic Sans, cursive"
+                    },
+                ),
+                background_color="#222222",
+                padding="1.5rem",
+                border_radius="lg",
+                box_shadow="lg",
+                width="90%",
+                margin_top="1.5rem",
             ),
-            rx.button(
-                "Update charts", 
-                on_click=FetcherState.fetch_weather_data, 
-                padding="0.5rem 1rem",
-            ),
-            spacing="3",
-            style={
-                "fontFamily": "Comic Sans MS, Comic Sans, cursive"
-            },
-            align_items="center",
             **kw,
         )
 
