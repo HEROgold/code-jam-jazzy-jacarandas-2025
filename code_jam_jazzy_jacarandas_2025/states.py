@@ -190,6 +190,7 @@ class FetcherState(rx.State):
 
         return fig_pie_all
 
+    @rx.event
     def fetch_weather_data(self) -> None:
         """Fetch data about temperatures from the Open-meteo free API."""
         self.loaded = False
