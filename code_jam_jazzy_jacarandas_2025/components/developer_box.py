@@ -1,5 +1,7 @@
 import reflex as rx
 
+from code_jam_jazzy_jacarandas_2025.settings import Settings
+
 
 def developer_box(name: str, description: str, github_link: str, *, team_leader: bool = False) -> rx.Component:
     """Render box containing information about a developer.
@@ -14,9 +16,9 @@ def developer_box(name: str, description: str, github_link: str, *, team_leader:
     return rx.box(
         rx.hstack(
             rx.vstack(
-                rx.text(name, size="6", font_family="Comic Sans MS, Comic Sans, cursive"),
-                rx.text(description, size="4", font_family="Comic Sans MS, Comic Sans, cursive"),
-                rx.link("Github link", href=github_link, size="3", font_family="Comic Sans MS, Comic Sans, cursive"),
+                rx.text(name, size="6", font_family=Settings.font_family),
+                rx.text(description, size="4", font_family=Settings.font_family),
+                rx.link("Github link", href=github_link, size="3", font_family=Settings.font_family),
                 spacing="1",
                 width="40vw",
             ),

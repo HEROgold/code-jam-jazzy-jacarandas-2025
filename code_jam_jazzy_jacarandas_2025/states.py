@@ -9,8 +9,8 @@ import reflex as rx
 import requests_cache
 from retry_requests import retry
 
-from code_jam_jazzy_jacarandas_2025.config import Config
 from code_jam_jazzy_jacarandas_2025.logger import app_log
+from code_jam_jazzy_jacarandas_2025.settings import FetcherSettings
 
 if TYPE_CHECKING:
     from logging import Logger
@@ -26,17 +26,6 @@ class HourlyData(TypedDict):
 
     date: pd.DatetimeIndex
     temperature_2m: ndarray
-
-
-class FetcherSettings:
-    """Configuration for fetching weather data."""
-
-    latitude = Config(51.5085)
-    longitude = Config(-0.1257)
-    hourly = Config("temperature_2m")
-    timezone = Config("auto")
-    forecast_days = Config(16)
-    api_url = Config("https://api.open-meteo.com/v1/forecast")
 
 
 class FetcherState(rx.State):
@@ -144,7 +133,7 @@ class FetcherState(rx.State):
 
         fig.update_layout(
             title={
-                "text": "Daily Temperature OHLC (°C) in London",
+                "text": f"Daily Temperature OHLC (°C) in {FetcherSettings.country_name}",
                 "x": 0.5,
             },
             xaxis_rangeslider_visible=False,
@@ -174,7 +163,7 @@ class FetcherState(rx.State):
 
         fig_pie_all.update_layout(
             title={
-                "text": "Daily Highest Temperatures in London",
+                "text": f"Daily Highest Temperatures in {FetcherSettings.country_name}",
                 "x": 0.5,
                 "xanchor": "center",
                 "font": {
@@ -190,6 +179,7 @@ class FetcherState(rx.State):
 
         return fig_pie_all
 
+    @rx.event
     def fetch_weather_data(self) -> None:
         """Fetch data about temperatures from the Open-meteo free API."""
         self.loaded = False

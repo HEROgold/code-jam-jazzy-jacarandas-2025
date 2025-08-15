@@ -1,6 +1,7 @@
 import reflex as rx
 
 from code_jam_jazzy_jacarandas_2025.components.layout import base_layout
+from code_jam_jazzy_jacarandas_2025.sliders import CountrySlider
 from code_jam_jazzy_jacarandas_2025.states import FetcherState
 
 
@@ -12,6 +13,7 @@ def index() -> rx.Component:
     Shows a loading spinner and message while data is being fetched.
     """
     content = rx.vstack(
+        CountrySlider.new(width="40vw", margin_bottom="2"),
         rx.cond(
             FetcherState.loaded,
             rx.vstack(
