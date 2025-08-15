@@ -10,7 +10,7 @@ import requests_cache
 from retry_requests import retry
 
 from code_jam_jazzy_jacarandas_2025.logger import app_log
-from code_jam_jazzy_jacarandas_2025.settings import FetcherSettings
+from code_jam_jazzy_jacarandas_2025.settings import FetcherSettings, Settings
 
 if TYPE_CHECKING:
     from logging import Logger
@@ -139,7 +139,7 @@ class FetcherState(rx.State):
             xaxis_rangeslider_visible=False,
             yaxis_title="Temperature (°C)",
             font={
-                "family": "Comic Sans MS, Comic Sans, cursive",
+                "family": Settings.font_family,
                 "size": 14,
             },
         )
@@ -167,12 +167,12 @@ class FetcherState(rx.State):
                 "x": 0.5,
                 "xanchor": "center",
                 "font": {
-                    "family": "Comic Sans MS, Comic Sans, cursive",
+                    "family": Settings.font_family,
                     "size": 24,
                 },
             },
             font={
-                "family": "Comic Sans MS, Comic Sans, cursive",
+                "family": Settings.font_family,
                 "size": 12,
             },
         )

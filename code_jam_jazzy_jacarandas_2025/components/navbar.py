@@ -1,5 +1,7 @@
 import reflex as rx
 
+from code_jam_jazzy_jacarandas_2025.settings import Settings
+
 
 def navbar_button_format(name: str, redirect: rx.event.EventSpec) -> rx.Component:
     """Style navigation button."""
@@ -68,5 +70,5 @@ def navbar() -> rx.Component:
         position="sticky",
         top="0",
         z_index="1000",
-        style={"fontFamily": "Comic Sans MS, Comic Sans, cursive"},
+        style={"fontFamily": Settings.font_family},
     )
