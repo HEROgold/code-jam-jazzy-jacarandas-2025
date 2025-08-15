@@ -13,31 +13,31 @@ class Developer(TypedDict):
 developers: list[Developer] = [
     {
         "name": "Hero",
-        "description": "Team leader",
+        "description": "Team leader. Built fetcher system, sliders, and configuration.",
         "github_link": "https://github.com/HEROgold",
         "team_leader": True,
     },
     {
         "name": "KKiyomi",
-        "description": "Test test 123",
+        "description": "Team member contributing with planning, brainstorming and behind the scenes code improvement.",
         "github_link": "https://github.com/kkiyomi",
         "team_leader": False,
     },
     {
         "name": "Doodleheimer",
-        "description": "Test test 123",
+        "description": "App setup specialist. Created foundation Reflex app and slider components.",
         "github_link": "https://github.com/artahadhahd",
         "team_leader": False,
     },
     {
         "name": "Bananadado",
-        "description": "Test test 123",
+        "description": "Team member contributing to project development, UI improvements and testing.",
         "github_link": "https://github.com/bananadado",
         "team_leader": False,
     },
     {
         "name": "Andre Binbow",
-        "description": "Test test 123",
+        "description": "UI/UX developer. Created developer boxes, charts, logo integration, and styling.",
         "github_link": "https://github.com/AndreBinbow",
         "team_leader": False,
     },
