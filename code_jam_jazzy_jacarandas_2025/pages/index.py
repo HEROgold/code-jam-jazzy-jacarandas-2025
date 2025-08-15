@@ -13,23 +13,17 @@ def index() -> rx.Component:
     Shows a loading spinner and message while data is being fetched.
     """
     content = rx.vstack(
-        CountrySlider.new(width="40vw", margin_bottom="2"),
+        CountrySlider.new(width="80vw", margin_bottom="2"),
         rx.cond(
             FetcherState.loaded,
-            rx.vstack(
-                rx.plotly(
-                    data=FetcherState.fig,
-                    height="40vh",
-                    width="40vw",
-                ),
-                rx.center(
-                    rx.plotly(
-                        data=FetcherState.fig_pie_all,
-                        height="55vh",
-                        width="40vw",
-                    ),
-                ),
-                align_items="center",
+            rx.grid(
+                rx.plotly(data=FetcherState.fig),
+                rx.plotly(data=FetcherState.fig_pie_all),
+                rx.plotly(data=FetcherState.rain),
+                rx.plotly(data=FetcherState.wind_speed),
+                columns="repeat(2, 1fr)",
+                rows="repeat(2, auto)",
+                gap=4,
             ),
             rx.vstack(
                 rx.text("Loading data...", font_size="5"),
