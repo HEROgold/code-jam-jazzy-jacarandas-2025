@@ -92,12 +92,21 @@ class CountrySlider(rx.State):
         return rx.vstack(
             rx.text("Country:"),
             rx.text(f"Selected: {CountrySlider.selected_country_display}"),
-            CountrySlider._make_slider(),
-            rx.button("Update charts", on_click=FetcherState.fetch_weather_data),
-            spacing="2",
+            rx.box(
+                CountrySlider._make_slider(),
+                width = "90%",
+                padding="0.5rem",
+            ),
+            rx.button(
+                "Update charts", 
+                on_click=FetcherState.fetch_weather_data, 
+                padding="0.5rem 1rem",
+            ),
+            spacing="3",
             style={
                 "fontFamily": "Comic Sans MS, Comic Sans, cursive"
             },
+            align_items="center",
             **kw,
         )
 

@@ -7,7 +7,11 @@ def base_layout(children: rx.Component) -> rx.Component:
     """Wrap page content with navbar."""
     return rx.vstack(
         navbar(),  # Always on top
-        children,  # Page-specific content below
+        rx.box(
+            children,
+            padding_top="4rem",
+            width="100%",
+        ),
         spacing="4",
         align_items="center",
         width="100%",
