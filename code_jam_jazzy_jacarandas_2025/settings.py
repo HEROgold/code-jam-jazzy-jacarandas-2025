@@ -10,3 +10,4 @@ class Settings:
 
     app_name = Config(config.app_name)
     log_level = Config(Enum(rx.constants.LogLevel.DEFAULT))
+    font_family = Config("Comic Sans MS, Comic Sans, cursive")
