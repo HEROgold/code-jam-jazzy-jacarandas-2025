@@ -50,7 +50,6 @@ def navbar() -> rx.Component:
     # to add a new button just put it in the hstack
     return rx.box(
         rx.box(
-            # Logo pinned to the top-left
             logo(),
             position="absolute",  # Ensures that logo is in line with other navbar buttons
         ),

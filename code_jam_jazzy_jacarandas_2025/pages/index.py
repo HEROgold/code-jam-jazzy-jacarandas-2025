@@ -24,7 +24,7 @@ def index() -> rx.Component:
                     rx.plotly(
                         data=FetcherState.fig_pie_all,
                         height="55vh",
-                        width="20vw",
+                        width="40vw",
                     ),
                 ),
                 align_items="center",
@@ -35,7 +35,7 @@ def index() -> rx.Component:
                 align_items="center",
             ),
         ),
-        spacing="3",
+        spacing="1",
         align_items="center",
     )
     center = rx.center(content, height="100vh", width="100vw")
