@@ -134,7 +134,7 @@ class FetcherState(rx.State):
         self,
         hourly_variables: list[VariableWithValues],
         date_range: pd.DatetimeIndex,
-        hourly_data: dict[str, pd.DatetimeIndex | np.ndarray]
+        hourly_data: dict[str, pd.DatetimeIndex | np.ndarray],
     ) -> None:
         if len(hourly_variables) > 2:  # noqa: PLR2004
             try:
@@ -148,7 +148,7 @@ class FetcherState(rx.State):
         self,
         hourly_variables: list[VariableWithValues],
         date_range: pd.DatetimeIndex,
-        hourly_data: dict[str, pd.DatetimeIndex | np.ndarray]
+        hourly_data: dict[str, pd.DatetimeIndex | np.ndarray],
     ) -> None:
         if len(hourly_variables) > 1:
             try:
@@ -306,19 +306,19 @@ class FetcherState(rx.State):
         hourly_dataframe["hour"] = hourly_dataframe["date"].dt.hour
         temp_by_hour = hourly_dataframe.groupby("hour")["temperature_2m"].mean().reset_index()
 
-            # Convert temperature variations to fake "rain intensity"
-            # Lower temperatures = higher chance of rain (very simplified model)
+        # Convert temperature variations to fake "rain intensity"
+        # Lower temperatures = higher chance of rain (very simplified model)
         min_temp = temp_by_hour["temperature_2m"].min()
         max_temp = temp_by_hour["temperature_2m"].max()
         temp_range = max_temp - min_temp if max_temp != min_temp else 1
 
-            # Invert temperature (lower temp = more rain) and add some randomness
+        # Invert temperature (lower temp = more rain) and add some randomness
         rng = np.random.default_rng(42)  # Fixed seed for consistency
         fake_rain = []
         for temp in temp_by_hour["temperature_2m"]:
-                # Normalize and invert: colder temps get higher values
+            # Normalize and invert: colder temps get higher values
             normalized = 1 - ((temp - min_temp) / temp_range)
-                # Scale to reasonable precipitation values (0-5mm)
+            # Scale to reasonable precipitation values (0-5mm)
             rain_value = normalized * 5 + rng.uniform(0, 1)
             fake_rain.append(max(0, rain_value))
 
@@ -340,7 +340,8 @@ class FetcherState(rx.State):
             return go.Figure()
 
         # Setup the seed for random, ensuring reproducibility
-        seed = int(FetcherSettings.latitude + FetcherSettings.longitude)
+        # Seed is made absolute as "np.random.default_rng" expects a positive value
+        seed = int(abs(FetcherSettings.latitude + FetcherSettings.longitude))
         random.seed(seed)
         rng = np.random.default_rng(seed)
 
@@ -424,14 +425,14 @@ class FetcherState(rx.State):
         daily_temp = hourly_dataframe.groupby("day")["temperature_2m"].agg(["mean", "std"]).reset_index()
         daily_temp.columns = ["day", "temp_mean", "temp_std"]
 
-            # Convert temperature variation to fake wind speed
-            # Higher temperature variation = more wind (oversimplified model)
+        # Convert temperature variation to fake wind speed
+        # Higher temperature variation = more wind (oversimplified model)
         rng = np.random.default_rng(42)  # Fixed seed for consistency
         fake_wind = []
         for _, row in daily_temp.iterrows():
-                # Use temperature standard deviation as base for wind speed
+            # Use temperature standard deviation as base for wind speed
             wind_base = row["temp_std"] * 3 if not pd.isna(row["temp_std"]) else 5
-                # Add some randomness and ensure reasonable wind speeds (0-25 km/h)
+            # Add some randomness and ensure reasonable wind speeds (0-25 km/h)
             wind_speed = max(0, min(25, wind_base + rng.uniform(-3, 8)))
             fake_wind.append(wind_speed)
 
