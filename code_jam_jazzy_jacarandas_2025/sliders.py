@@ -2,9 +2,8 @@ from typing import Any, ClassVar
 
 import reflex as rx
 from reflex.components.radix.themes.components.slider import Slider
-from reflex.components.radix.themes.layout.stack import VStack
 
-from code_jam_jazzy_jacarandas_2025.settings import FetcherSettings
+from code_jam_jazzy_jacarandas_2025.settings import FetcherSettings, Settings
 from code_jam_jazzy_jacarandas_2025.states import FetcherState
 
 
@@ -87,13 +86,13 @@ class CountrySlider(rx.State):
         return f" ({code}) {name}"
 
     @staticmethod
-    def new(**kw: Any) -> VStack:  # noqa: ANN401
+    def new(**kw: Any) -> rx.Component:  # noqa: ANN401
         """Create a new CountrySlider component."""
         return rx.center(
             rx.box(
                 rx.vstack(
                     rx.text("Country:", font_weight="bold", font_size="lg", color="white"),
-                    rx.text(CountrySlider.selected_country_display, font_size="md", color="gray.300"),
+                    rx.text(CountrySlider.selected_country_display, font_size="md", color="white"),
                     CountrySlider._make_slider(),
                     rx.button(
                         "Update charts",
@@ -107,7 +106,7 @@ class CountrySlider(rx.State):
                     ),
                     spacing="4",
                     align_items="stretch",
-                    style={"fontFamily": "Comic Sans MS, Comic Sans, cursive"},
+                    style={"fontFamily": Settings.font_family},
                 ),
                 background_color="#222222",
                 padding="1.5rem",
