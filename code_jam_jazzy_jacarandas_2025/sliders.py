@@ -5,6 +5,7 @@ from reflex.components.radix.themes.components.slider import Slider
 from reflex.components.radix.themes.layout.stack import VStack
 
 from code_jam_jazzy_jacarandas_2025.settings import FetcherSettings
+from code_jam_jazzy_jacarandas_2025.states import FetcherState
 
 
 class CountrySlider(rx.State):
@@ -89,9 +90,10 @@ class CountrySlider(rx.State):
     def new(**kw: Any) -> VStack:  # noqa: ANN401
         """Create a new CountrySlider component."""
         return rx.vstack(
-            rx.text("Country (Refresh page to load data!):"),
+            rx.text("Country:"),
             rx.text(f"Selected: {CountrySlider.selected_country_display}"),
             CountrySlider._make_slider(),
+            rx.button("Update charts", on_click=FetcherState.fetch_weather_data),
             spacing="2",
             **kw,
         )
