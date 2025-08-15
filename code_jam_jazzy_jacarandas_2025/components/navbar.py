@@ -1,9 +1,11 @@
+from typing import Callable
+
 import reflex as rx
 
 from code_jam_jazzy_jacarandas_2025.settings import Settings
 
 
-def navbar_button_format(name: str, redirect: rx.event.EventSpec) -> rx.Component:
+def navbar_button_format(name: str, redirect: Callable[[], rx.event.EventSpec]) -> rx.Component:
     """Style navigation button."""
     return rx.button(
         name,
