@@ -95,6 +95,9 @@ class CountrySlider(rx.State):
             CountrySlider._make_slider(),
             rx.button("Update charts", on_click=FetcherState.fetch_weather_data),
             spacing="2",
+            style={
+                "fontFamily": "Comic Sans MS, Comic Sans, cursive"
+            },
             **kw,
         )
 
