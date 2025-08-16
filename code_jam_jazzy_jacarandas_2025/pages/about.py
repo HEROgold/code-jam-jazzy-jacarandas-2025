@@ -1,4 +1,5 @@
 import reflex as rx
+from reflex.components.core.html import Html
 
 from code_jam_jazzy_jacarandas_2025.components.developer_box import developer_box
 from code_jam_jazzy_jacarandas_2025.components.layout import base_layout
@@ -27,7 +28,8 @@ def about() -> rx.Component:
     return base_layout(content)
 
 
-def get_app_description():
+def get_app_description() -> Html:
+    """Return the app description."""
     return rx.html(
         "<br>"
         "This app displays weather data for selected locations using graphs that are completely "
