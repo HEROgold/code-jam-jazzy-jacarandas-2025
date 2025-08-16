@@ -5,14 +5,30 @@
 This is the `Jazzy Jacaranda's` submission for the 2025 Python Discord Summer Code Jam, with the theme of "wrong tool for the job."
 
 ## Features
- - Temperature viewed as an OHLC chart
- - Highest daily temperature viewed as a pie chart
+
+- Temperature viewed as an OHLC chart
+- Highest daily temperature viewed as a pie chart
 
 ## User Guide
- =To-do once app is complete
 
+The webserver will run on `http://localhost:3000`
 
+### UV
 
+Run in your terminal:
+
+```bash
+uv sync
+uv run reflex run
+```
+
+### Poetry
+
+- TODO
+
+### Docker
+
+- TODO
 
 ## The Jazzy Jacarandas Team
 
