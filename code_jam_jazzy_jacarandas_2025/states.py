@@ -399,7 +399,7 @@ class FetcherState(rx.State):
             title={
                 "text": (
                     f"Wind Speed Timeline in {FetcherSettings.country_name}<br>"
-                    "<sub>X-axis: Days from start, Y-axis: Wind Speed (km/h)</sub>"
+                    "<sub>X-axis: Days from start</sub>"
                 ),
                 "x": 0.5,
                 "xanchor": "center",
@@ -409,7 +409,6 @@ class FetcherState(rx.State):
                 },
             },
             xaxis={"showgrid": True, "zeroline": False, "title": "Days from Start"},
-            yaxis={"showgrid": True, "zeroline": False, "title": "Wind Speed (km/h)"},
             font={
                 "family": Settings.font_family,
                 "size": 12,
