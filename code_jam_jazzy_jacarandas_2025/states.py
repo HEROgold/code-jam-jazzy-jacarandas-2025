@@ -83,12 +83,12 @@ class FetcherState(rx.State):
                 break
         return variables
 
-    def _get_api_params(self) -> dict[str, str | float | int]:
+    def _get_api_params(self) -> dict[str, str | float | int | list[str]]:
         """Get API parameters for weather data request."""
         return {
             "latitude": FetcherSettings.latitude,
             "longitude": FetcherSettings.longitude,
-            "hourly": FetcherSettings.hourly,
+            "hourly": FetcherSettings.hourly.split(),
             "timezone": FetcherSettings.timezone,
             "forecast_days": FetcherSettings.forecast_days,
         }
@@ -117,46 +117,57 @@ class FetcherState(rx.State):
         if len(hourly_variables) < 1:
             return None
 
+        # Based on FetcherSettings.hourly:
+        # "temperature_2m,precipitation,rain,showers,wind_speed_10m,wind_direction_10m,wind_gusts_10m"
+        # Variables order: 0=temperature_2m, 1=precipitation, 2=rain, 3=showers,
+        # 4=wind_speed_10m, 5=wind_direction_10m, 6=wind_gusts_10m
         hourly_data: dict[str, pd.DatetimeIndex | np.ndarray] = {
             "date": date_range,
             "temperature_2m": hourly_variables[0].ValuesAsNumpy(),
         }
 
-        self._add_precipitation(hourly_variables, date_range, hourly_data)
-        self._add_wind_speed(hourly_variables, date_range, hourly_data)
+        self._add_precipitation_data(hourly_variables, date_range, hourly_data)
+        self._add_wind_data(hourly_variables, hourly_data)
 
         hourly_dataframe = pd.DataFrame(data=hourly_data)
         hourly_dataframe["date"] = pd.to_datetime(hourly_dataframe["date"])
 
         return hourly_dataframe
 
-    def _add_wind_speed(
+    def _add_precipitation_data(
         self,
         hourly_variables: list[VariableWithValues],
         date_range: pd.DatetimeIndex,
         hourly_data: dict[str, pd.DatetimeIndex | np.ndarray],
     ) -> None:
-        if len(hourly_variables) > 2:  # noqa: PLR2004
-            try:
-                hourly_data["wind_speed_10m"] = hourly_variables[2].ValuesAsNumpy()
-            except struct.error:
-                hourly_data["wind_speed_10m"] = np.zeros(len(date_range))
-        else:
-            hourly_data["wind_speed_10m"] = np.zeros(len(date_range))
+        """Add precipitation data from API variables (precipitation, rain, showers)."""
+        total_precipitation = np.zeros(len(date_range))
 
-    def _add_precipitation(
+        # Add precipitation (index 1)
+        # Add rain (index 2)
+        # Add showers (index 3)
+        for i in range(1, 4):
+            if len(hourly_variables) > i:
+                with contextlib.suppress(struct.error, TypeError):
+                    total_precipitation += hourly_variables[i].ValuesAsNumpy()
+
+        hourly_data["precipitation"] = total_precipitation
+
+    def _add_wind_data(
         self,
         hourly_variables: list[VariableWithValues],
-        date_range: pd.DatetimeIndex,
         hourly_data: dict[str, pd.DatetimeIndex | np.ndarray],
     ) -> None:
-        if len(hourly_variables) > 1:
-            try:
-                hourly_data["precipitation"] = hourly_variables[1].ValuesAsNumpy()
-            except struct.error:
-                hourly_data["precipitation"] = np.zeros(len(date_range))
-        else:
-            hourly_data["precipitation"] = np.zeros(len(date_range))
+        """Add wind speed data from API variables."""
+        # Add wind_speed_10m (index 4)
+        # Add wind_direction_10m (index 5)
+        # Add wind_gusts_10m (index 6)
+        for i in range(4, 7):
+            if len(hourly_variables) > i:
+                with contextlib.suppress(struct.error, TypeError):
+                    data_key = f"wind_{['speed', 'direction', 'gusts'][i-4]}_10m"
+                    data = hourly_variables[i].ValuesAsNumpy()
+                    hourly_data[data_key] = data
 
     def _create_ohlc_dataframe(self, hourly_dataframe: pd.DataFrame) -> pd.DataFrame:
         """Convert hourly data to OHLC (Open, High, Low, Close) format."""
