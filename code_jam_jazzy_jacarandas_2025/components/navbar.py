@@ -44,9 +44,14 @@ def home_button() -> rx.Component:
     return navbar_button_format("Home", redirect_to_index)
 
 
-def logo() -> rx.Component:
-    """Render logo."""
+def jazzy_jacarandas_logo_component() -> rx.Component:
+    """Render 'Jazzy Jacarandas' logo."""
     return rx.image(src="/jazzy_jacarandas_logo.png", width="100px", height="auto")
+
+
+def the_forecast_strikes_back_component() -> rx.Component:
+    """Render 'The Forecast Strikes Back' logo."""
+    return rx.image(src="/the_forecast_strikes_back_logo.png", width="100px", height="auto")
 
 
 def navbar() -> rx.Component:
@@ -54,8 +59,13 @@ def navbar() -> rx.Component:
     # to add a new button just put it in the hstack
     return rx.box(
         rx.box(
-            logo(),
+            the_forecast_strikes_back_component(),
             position="absolute",  # Ensures that logo is in line with other navbar buttons
+        ),
+        rx.box(
+            jazzy_jacarandas_logo_component(),
+            position="absolute",  # Ensures that logo is in line with other navbar buttons
+            right="1rem",
         ),
         rx.hstack(
             home_button(),
