@@ -37,10 +37,10 @@ class HourlyData(TypedDict):
 class FetcherState(rx.State):
     """Store plotly charts once fetched."""
 
-    fig: go.Figure = go.Figure()
-    fig_pie_all: go.Figure = go.Figure()
-    rain: go.Figure = go.Figure()
-    wind_speed: go.Figure = go.Figure()
+    ohcl_temp_chart: go.Figure = go.Figure()
+    pie_temp_chart: go.Figure = go.Figure()
+    rain_radar_chart: go.Figure = go.Figure()
+    wind_speed_chart: go.Figure = go.Figure()
 
     loaded: bool = False
 
@@ -456,9 +456,9 @@ class FetcherState(rx.State):
         df_ohlc = self._create_ohlc_dataframe(hourly_dataframe)
 
         # Create charts
-        self.fig = self._create_candlestick_chart(df_ohlc)
-        self.fig_pie_all = self._create_pie_chart(df_ohlc)
-        self.rain = self._create_rain_radar_chart(hourly_dataframe)
-        self.wind_speed = self._create_wind_spiral_chart(hourly_dataframe)
+        self.ohcl_temp_chart = create_candlestick_chart(df_ohlc)
+        self.pie_temp_chart = create_pie_chart(df_ohlc)
+        self.rain_radar_chart = create_rain_radar_chart(hourly_dataframe)
+        self.wind_speed_chart = create_wind_spiral_chart(hourly_dataframe)
 
         self.loaded = True

@@ -17,10 +17,10 @@ def index() -> rx.Component:
         rx.cond(
             FetcherState.loaded,
             rx.grid(
-                rx.plotly(data=FetcherState.fig),
-                rx.plotly(data=FetcherState.fig_pie_all),
-                rx.plotly(data=FetcherState.rain),
-                rx.plotly(data=FetcherState.wind_speed),
+                rx.plotly(data=FetcherState.ohcl_temp_chart),
+                rx.plotly(data=FetcherState.pie_temp_chart),
+                rx.plotly(data=FetcherState.rain_radar_chart),
+                rx.plotly(data=FetcherState.wind_speed_chart),
                 columns="repeat(2, 1fr)",
                 rows="repeat(2, auto)",
                 gap=4,
