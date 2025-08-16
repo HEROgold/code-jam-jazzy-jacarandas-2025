@@ -18,7 +18,7 @@ class FetcherSettings:
 
     latitude = Config(51.5085)
     longitude = Config(-0.1257)
-    hourly = Config("temperature_2m")
+    hourly = Config("temperature_2m,precipitation,rain,showers,wind_speed_10m,wind_direction_10m,wind_gusts_10m")
     timezone = Config("auto")
     forecast_days = Config(16)
     api_url = Config("https://api.open-meteo.com/v1/forecast")
