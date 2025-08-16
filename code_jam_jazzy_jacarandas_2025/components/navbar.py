@@ -76,6 +76,7 @@ def navbar() -> rx.Component:
             width="100%",
         ),
         width="100%",
+        height="56px",
         padding="0.75rem 1rem",
         background="linear-gradient(to bottom, #222222, #121212)",
         box_shadow="md",

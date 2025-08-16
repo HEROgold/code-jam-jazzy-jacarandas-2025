@@ -30,7 +30,7 @@ developers: list[Developer] = [
         "team_leader": False,
     },
     {
-        "name": "Bananadado",
+        "name": "bananadado",
         "description": "Team member contributing to project development, UI improvements and testing.",
         "github_link": "https://github.com/bananadado",
         "team_leader": False,

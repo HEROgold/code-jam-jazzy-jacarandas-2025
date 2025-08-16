@@ -9,8 +9,8 @@ def base_layout(children: rx.Component) -> rx.Component:
         navbar(),  # Always on top
         rx.box(
             children,
-            padding_top="4rem",
             width="100%",
+            padding_top="64px",
         ),
         spacing="4",
         align_items="center",
