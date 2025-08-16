@@ -171,7 +171,7 @@ class FetcherState(rx.State):
         for i in range(4, 7):
             if len(hourly_variables) > i:
                 with contextlib.suppress(struct.error, TypeError):
-                    data_key = f"wind_{['speed', 'direction', 'gusts'][i-4]}_10m"
+                    data_key = f"wind_{['speed', 'direction', 'gusts'][i - 4]}_10m"
                     data = hourly_variables[i].ValuesAsNumpy()
                     hourly_data[data_key] = data
 

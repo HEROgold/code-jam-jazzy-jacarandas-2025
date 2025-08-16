@@ -1,4 +1,3 @@
-
 import random
 
 import numpy as np
@@ -37,6 +36,7 @@ def create_candlestick_chart(df_ohlc: DataFrame) -> Figure:
 
     return fig
 
+
 def create_pie_chart(df_ohlc: DataFrame) -> Figure:
     """Create pie chart showing daily highest temperatures."""
     labels = df_ohlc["date"].dt.strftime("%b %d")
@@ -69,6 +69,7 @@ def create_pie_chart(df_ohlc: DataFrame) -> Figure:
     )
 
     return fig_pie_all
+
 
 def create_rain_radar_chart(hourly_dataframe: DataFrame) -> Figure:
     """Create a creative radar chart for precipitation data."""
@@ -131,6 +132,7 @@ def create_rain_radar_chart(hourly_dataframe: DataFrame) -> Figure:
     )
 
     return fig_rain
+
 
 def create_wind_spiral_chart(hourly_dataframe: DataFrame) -> Figure:
     """Create a creative wind speed chart organized by date coordinates."""
@@ -199,10 +201,7 @@ def create_wind_spiral_chart(hourly_dataframe: DataFrame) -> Figure:
 
     fig_wind.update_layout(
         title={
-            "text": (
-                f"Wind Speed Timeline in {FetcherSettings.country_name}<br>"
-                "<sub>X-axis: Days from start</sub>"
-            ),
+            "text": (f"Wind Speed Timeline in {FetcherSettings.country_name}<br><sub>X-axis: Days from start</sub>"),
             "x": 0.5,
             "xanchor": "center",
             "font": {

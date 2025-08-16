@@ -26,6 +26,7 @@ def about() -> rx.Component:
     )
     return base_layout(content)
 
+
 def get_app_description():
     return rx.html(
         "<br>"
