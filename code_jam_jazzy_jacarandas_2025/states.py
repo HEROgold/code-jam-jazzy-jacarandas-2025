@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import random
+import contextlib
 import struct
 from typing import TYPE_CHECKING, TypedDict
 
@@ -13,8 +13,14 @@ import requests_cache
 from openmeteo_sdk.VariableWithValues import VariableWithValues
 from retry_requests import retry
 
+from code_jam_jazzy_jacarandas_2025.charts import (
+    create_candlestick_chart,
+    create_pie_chart,
+    create_rain_radar_chart,
+    create_wind_spiral_chart,
+)
 from code_jam_jazzy_jacarandas_2025.logger import app_log
-from code_jam_jazzy_jacarandas_2025.settings import FetcherSettings, Settings
+from code_jam_jazzy_jacarandas_2025.settings import FetcherSettings
 
 if TYPE_CHECKING:
     from logging import Logger
@@ -78,8 +84,8 @@ class FetcherState(rx.State):
                     break
                 variables.append(hourly_var)
                 i += 1
-            except struct.error:
-                # API buffer issues - stop collecting variables
+            except (struct.error, TypeError):
+                # API buffer issues or type errors - stop collecting variables
                 break
         return variables
 
