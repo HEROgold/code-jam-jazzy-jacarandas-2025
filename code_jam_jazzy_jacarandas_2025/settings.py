@@ -21,6 +21,8 @@ class FetcherSettings:
     hourly = Config("temperature_2m,precipitation,rain,showers,wind_speed_10m,wind_direction_10m,wind_gusts_10m")
     timezone = Config("auto")
     forecast_days = Config(16)
+    lookback_days = Config(365)
     api_url = Config("https://api.open-meteo.com/v1/forecast")
+    archive_api_url = Config("https://archive-api.open-meteo.com/v1/archive")
     country_name = Config("London")
     country_code = Config("GB")

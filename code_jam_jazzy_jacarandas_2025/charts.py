@@ -26,7 +26,20 @@ def create_candlestick_chart(df_ohlc: DataFrame) -> Figure:
             "text": f"Daily Temperature OHLC (°C) in {FetcherSettings.country_name}",
             "x": 0.5,
         },
-        xaxis_rangeslider_visible=False,
+        xaxis_rangeslider_visible=True,
+        xaxis={
+            "rangeselector": {
+                "buttons": [
+                    {"count": 7, "label": "1w", "step": "day", "stepmode": "backward"},
+                    {"count": 1, "label": "1m", "step": "month", "stepmode": "backward"},
+                    {"count": 3, "label": "3m", "step": "month", "stepmode": "backward"},
+                    {"step": "all"},
+                ]
+            },
+            "rangeslider": {"visible": True},
+            "type": "date",
+            "range": [df_ohlc["date"].iloc[-FetcherSettings.forecast_days], df_ohlc["date"].iloc[-1]],
+        },
         yaxis_title="Temperature (°C)",
         font={
             "family": Settings.font_family,

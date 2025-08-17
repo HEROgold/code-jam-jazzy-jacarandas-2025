@@ -34,5 +34,5 @@ def index() -> rx.Component:
         spacing="1",
         align_items="center",
     )
-    center = rx.center(content, height="100vh", width="100vw")
+    center = rx.center(content, height="100%", width="100%")
     return base_layout(center)
