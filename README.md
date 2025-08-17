@@ -28,7 +28,14 @@ uv run reflex run
 
 ### Docker
 
-- TODO
+```bash
+# pull the image
+docker pull doodleheimer/jazzy_jacarandas
+# run the container
+docker run -it --rm -p 3000:3000 -p 8000:8000 doodleheimer/jazzy_jacarandas
+```
+
+From Docker Desktop make sure to put ports 3000 and 8000 in the optional settings.
 
 ## The Jazzy Jacarandas Team
 
