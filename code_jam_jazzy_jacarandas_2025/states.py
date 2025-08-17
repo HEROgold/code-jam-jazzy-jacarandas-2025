@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import contextlib
-import datetime
 import struct
+from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, TypedDict
 
 import numpy as np
@@ -111,17 +111,19 @@ class FetcherState(rx.State):
         """Fetch raw weather data from Open-meteo API."""
         openmeteo = self._get_session()
         params = self._get_api_params()
-        del params['forecast_days']
+        del params["forecast_days"]
 
         lookback_days = FetcherSettings.lookback_days
 
-        today = datetime.date.today()
-        start_date = today - datetime.timedelta(days=lookback_days)
+        today = datetime.now(UTC).date()
+        start_date = today - timedelta(days=lookback_days)
 
-        params.update({
-            "start_date": start_date.strftime("%Y-%m-%d"),
-            "end_date": today.strftime("%Y-%m-%d"),
-        })
+        params.update(
+            {
+                "start_date": start_date.strftime("%Y-%m-%d"),
+                "end_date": today.strftime("%Y-%m-%d"),
+            }
+        )
 
         return openmeteo.weather_api(FetcherSettings.archive_api_url, params=params)[0]
 
