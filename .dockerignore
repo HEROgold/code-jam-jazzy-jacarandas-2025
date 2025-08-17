@@ -1,0 +1,11 @@
+.git
+**/__pycache__
+**/*.pyc
+**/*.pyo
+.github
+.venv
+.states
+.web
+uv.lock
+poetry.lock
+.cache.sqlite
