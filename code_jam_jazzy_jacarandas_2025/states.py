@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import datetime
 import struct
 from typing import TYPE_CHECKING, TypedDict
 
@@ -106,6 +107,24 @@ class FetcherState(rx.State):
 
         return openmeteo.weather_api(FetcherSettings.api_url, params=params)[0]
 
+    def _fetch_api_archive_data(self) -> WeatherApiResponse | None:
+        """Fetch raw weather data from Open-meteo API."""
+        openmeteo = self._get_session()
+        params = self._get_api_params()
+        del params['forecast_days']
+
+        lookback_days = FetcherSettings.lookback_days
+
+        today = datetime.date.today()
+        start_date = today - datetime.timedelta(days=lookback_days)
+
+        params.update({
+            "start_date": start_date.strftime("%Y-%m-%d"),
+            "end_date": today.strftime("%Y-%m-%d"),
+        })
+
+        return openmeteo.weather_api(FetcherSettings.archive_api_url, params=params)[0]
+
     def _process_hourly_data(self, response: WeatherApiResponse) -> pd.DataFrame | None:
         """Process hourly weather data into a DataFrame."""
         if data := self.get_hourly_data(response):
@@ -200,16 +219,23 @@ class FetcherState(rx.State):
         if not response:
             return
 
+        archive_resp = self._fetch_api_archive_data()
+
         # Process hourly data
         hourly_dataframe = self._process_hourly_data(response)
+        full_df_ohlc = hourly_dataframe
+        archive_hourly_dataframe = self._process_hourly_data(archive_resp)
         if hourly_dataframe is None:
             return
-
+        if archive_hourly_dataframe is not None:
+            full_hourly_dataframe = pd.concat([archive_hourly_dataframe, hourly_dataframe])
+            full_hourly_dataframe = full_hourly_dataframe.sort_index()
+            full_df_ohlc = self._create_ohlc_dataframe(full_hourly_dataframe)
         # Create OHLC dataframe
         df_ohlc = self._create_ohlc_dataframe(hourly_dataframe)
 
         # Create charts
-        self.ohcl_temp_chart = create_candlestick_chart(df_ohlc)
+        self.ohcl_temp_chart = create_candlestick_chart(full_df_ohlc)
         self.pie_temp_chart = create_pie_chart(df_ohlc)
         self.rain_radar_chart = create_rain_radar_chart(hourly_dataframe)
         self.wind_speed_chart = create_wind_spiral_chart(hourly_dataframe)
