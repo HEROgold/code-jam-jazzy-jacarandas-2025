@@ -24,7 +24,10 @@ uv run reflex run
 
 ### Poetry
 
-- TODO
+```bash
+poetry install
+poetry run reflex run
+```
 
 ### Docker
 
